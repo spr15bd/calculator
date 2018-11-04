@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+	<style>
+		.calculator-image {
+  			width:300px;
+  			height:450px;
+  			border-radius:10px;
+  			border:5px;
+  			border-style: solid;
+  			background-color:RGB(80,80,80);
+  			margin-left: auto;
+  			margin-right:auto;
+		}
+		.title {
+  			height:50px;
+		}
+		.screen {
+  			height: 75px;
+  			width: 260px;
+  			border:3px;
+  			border-style: solid;
+  			margin-left:auto;
+  			margin-right:auto;
+  			font-family:arial;
+  			background-color: RGB(100, 200, 255);
+		}
+		#display {
+  			padding-top: 10px;
+  			padding-right: 8px;
+  			font-size: 2em;
+  			text-align:right;
+		}
+		#calculation {
+  			padding-top: 5px;
+  			padding-right:10px;
+  			text-align:right;
+		}
+		.buttons-area {
+  			font-family:tahoma;
+  			font-weight:bold;
+  			width:220px;
+  			margin-left: auto;
+  			margin-right:auto;
+  			display:inline-block;
+  			position:relative;
+		}
+		.button {
+  			text-align:center;
+  			color:white;
+  			width:50px;
+  			height:40px;
+  			background-color:black;
+  			position:relative;
+  			display:inline-block;
+  			border:2px;
+  			border-style: solid;
+		}
+		#clear {
+  			top: 15px;
+  			left:24px;
+		}
+		#clear-entry {
+  			top: 15px;
+  			left:36px;
+		}
+		#divide {
+  			top: 15px;
+  			left:48px;
+		}
+		#multiply {
+  			top: 15px;
+  			left:60px;
+		}
+			#seven {
+  			top: 30px;
+  			left:24px;
+		}
+		#eight {
+  			top: 30px;
+  			left:36px;
+		}
+		#nine {
+  			top: 30px;
+  			left:48px;
+		}
+		#subtract {
+  			top: 30px;
+  			left:60px;
+		}
+		#four {
+  			top: 45px;
+  			left:24px;
+		}
+		#five {
+  			top: 45px;
+  			left:36px;
+		}
+		#six {
+  			top: 45px;
+  			left:48px;
+		}
+		#add {
+  			top: 45px;
+  			left:60px;
+		}
+		#one {
+  			top: 60px;
+  			left:24px;
+		}
+		#two {
+  			top: 60px;
+  			left:36px;
+		}
+		#three {
+  			top: 60px;
+  			left:48px;
+		}
+		#equals {
+  			top: 60px;
+  			left:60px;
+		}
+		#zero {
+ 			top: 75px;
+  			left:24px;
+		}
+		#decimal {
+  			top: 75px;
+  			left:36px;
+		}
+
+
+	</style>
+	<head>
+		<script defer src="https://cdn.freecodecamp.org/testable-projects-fcc/v1/bundle.js"></script>
+		<link href='https://fonts.googleapis.com/css?family=Orbitron' rel='stylesheet' type='text/css'>
+		<script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+		
+		<script crossorigin src="https://unpkg.com/react@16/umd/react.production.min.js"></script>
+		<script crossorigin src="https://unpkg.com/react-dom@16/umd/react-dom.production.min.js"></script>
+		
+	</head>
+	<body>
+		<div id="root"></div>
+		<script type='text/babel'>
+			function Display(props) {
+  				return (
+					<div class="screen">
+      						<div id="display">{props.displayNumber}</div> 
+      						<div id="calculation">{props.expression}</div>
+    					</div>
+				);
+			}
+			function Buttons(props) {
+  				return (
+    					<div class="buttons-area">
+      						<a class="button" id="clear" onClick={props.handleAC}>AC</a>
+      						<a class="button" id="clear-entry" onClick={props.handleCE}>CE</a>
+      						<a class="button" id="divide" onClick={() => props.handleOperator("/")}>{String.fromCharCode(247)}</a>
+      						<a class="button" id="multiply" onClick={() => props.handleOperator("*")}>x</a>
+      						<a class="button" id="seven" onClick={() => props.handleNumber(document.getElementById("seven").innerHTML)}>7</a>
+      						<a class="button" id="eight" onClick={() => props.handleNumber(document.getElementById("eight").innerHTML)}>8</a>
+      						<a class="button" id="nine" onClick={() => props.handleNumber(document.getElementById("nine").innerHTML)}>9</a>
+      						<a class="button" id="subtract" onClick={() => props.handleOperator("-")}>-</a>
+      						<a class="button" id="four" onClick={() => props.handleNumber(document.getElementById("four").innerHTML)}>4</a>
+      						<a class="button" id="five" onClick={() => props.handleNumber(document.getElementById("five").innerHTML)}>5</a>
+      						<a class="button" id="six" onClick={() => props.handleNumber(document.getElementById("six").innerHTML)}>6</a>
+      						<a class="button" id="add"  onClick={() => props.handleOperator("+")}>+</a>
+      						<a class="button" id="one" onClick={() => props.handleNumber(document.getElementById("one").innerHTML)}>1</a>
+      						<a class="button" id="two" onClick={() => props.handleNumber(document.getElementById("two").innerHTML)}>2</a>
+      						<a class="button" id="three" onClick={() => props.handleNumber(document.getElementById("three").innerHTML)}>3</a>
+      						<a class="button" id="equals" onClick={props.handleEquals}>=</a>
+      						<a class="button" id="zero" onClick={() => props.handleNumber(document.getElementById("zero").innerHTML)}>0</a>
+      						<a class="button" id="decimal" onClick={props.handleDecimal}>.</a>
+    					</div>
+  				);
+			}
+
+			class Main extends React.Component {
+  				constructor(props) {
+    					super(props);
+    					this.state = {
+						displayNumber:"0",    // stores the last item input (1st line of display)
+      						expression:0,         // stores the current ongoing calculation (2nd line of display)
+      						equalsPressed:false   // flags whether to store the current answer (this.answer)
+    					};
+    					this.answer=0;          // stores the current answer
+    					this.handleAC = this.handleAC.bind(this);
+    					this.handleCE = this.handleCE.bind(this);
+    					this.handleEquals = this.handleEquals.bind(this);
+    					this.handleNumber = this.handleNumber.bind(this);
+    					this.handleDecimal = this.handleDecimal.bind(this);
+    					this.handleOperator = this.handleOperator.bind(this);
+  				}
+  				handleEquals() {
+    					this.answer=Math.round(eval(this.state.expression)*100000000)/100000000;
+    					this.setState({
+      						displayNumber:this.answer,
+      						expression:this.state.expression+"="+this.answer,
+      						equalsPressed:true
+    					});
+  				}
+  
+  				handleNumber(x) {
+    					// concatenate number if the current displayNumber is not '0' or an operator; if it's 0' or it's an operator overwrite it
+    					if (this.state.displayNumber=="0") {
+      						this.setState({
+          						displayNumber:x,
+          						expression:x
+     						});
+    					} else if (this.state.displayNumber=="/"||this.state.displayNumber=="*"||this.state.displayNumber=="+"||this.state.displayNumber=="-") {
+      						this.setState({
+          						displayNumber:x,
+          						expression:this.state.expression+x
+      						});
+    					} else {
+      						this.setState({
+          						displayNumber:this.state.displayNumber+x,
+          						expression:this.state.expression+x
+      						});
+    					}
+  				}
+  				handleAC() {
+    					this.answer=0;
+    					this.setState({
+      						displayNumber:"0",
+      						expression:0,
+      						equalsPressed:false
+    					});
+  				}
+  				handleCE() {
+    					let expression=this.state.expression;
+    					let i=expression.length-1;
+    					// if the last character added is an operator, delete it
+    					if (expression.charAt(i)=="/"||expression.charAt(i)=="*"||expression.charAt(i)=="-"||expression.charAt(i)=="+") {
+      						expression=expression.substring(0, i);
+    					}
+    					// find indexes of last operators input (of each type), order them, then delete everything back to last operator
+    					let indexArray=[expression.lastIndexOf("/"),expression.lastIndexOf("*"),expression.lastIndexOf("-"),expression.lastIndexOf("+")];
+    					indexArray=indexArray.sort(function(a, b) {return b-a});
+    					if (indexArray[0]<0) {
+      						indexArray[0]=expression.length;
+    					}
+    					this.setState({
+      						displayNumber:expression.charAt(indexArray[0]-1),
+      						expression:expression.substring(0, indexArray[0]),
+      						equalsPressed:false
+    					});
+  				}
+  				handleOperator(operator) {
+    					// delete the character last inputted if it's also an operator, ie a +,-,÷ or x
+    					let value=this.state.displayNumber;
+    					if (value=="*"||value=="/"||value=="+"||value=="-") {
+      						let expr = this.state.expression;
+      							this.setState({
+        							expression:this.state.expression.substring(0,expr.length-1)+operator,
+        							displayNumber:operator,
+        							equalsPressed:false
+      							});
+    						} else {
+      							// if a calculation just finished, assign answer to display value
+      							if (this.state.equalsPressed) {
+        							this.setState({
+          							expression:this.answer+operator,
+          							equalsPressed:false,
+          							displayNumber:operator
+        						});
+      						} else {
+        						// we're in the middle of a calculation
+        						this.setState({
+          							expression:this.state.expression+operator,
+          							displayNumber:operator
+        						});
+      						}
+    					}
+  				}
+  				handleDecimal() {
+    					// only add a decimal if there isn't one already in the current number
+    					if (this.state.displayNumber.indexOf(".")==-1) {
+      						this.setState({
+        						displayNumber:this.state.displayNumber+".",
+        						expression:this.state.expression+"."
+      						});
+    					}
+  				}
+  				render() {
+    					return (
+      						<div>
+     	  						<div class="container-fluid">
+          							<div class="calculator-image">
+            								<div class="title"></div>
+            								<Display displayNumber={this.state.displayNumber} expression={this.state.expression}/>
+           								<Buttons handleAC={this.handleAC} handleCE={this.handleCE} handleEquals={this.handleEquals} handleNumber={this.handleNumber} handleDecimal={this.handleDecimal} handleOperator={this.handleOperator}/>
+          							</div>
+        						</div>
+      						</div>
+    					);
+  				}
+			}
+			ReactDOM.render(
+  				<Main />,
+  				document.getElementById('root')
+			);
+
+		</script>
+	</body>
+</html>
